@@ -74,12 +74,7 @@ export default function ProjectsList() {
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-        <Typography variant="h5">Проекты</Typography>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={() => navigate('/projects/new')}>
-          Создать проект
-        </Button>
-      </Box>
+      <Typography variant="h5" sx={{ mb: 3 }}>Проекты</Typography>
 
       {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
