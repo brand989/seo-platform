@@ -142,17 +142,7 @@ export default function Competitors() {
     setError('');
     try {
       await generateTZ(id, selected);
-      pollRef.current = setInterval(async () => {
-        const status = await getProjectStatus(id);
-        if (status.status === 'done') {
-          clearInterval(pollRef.current);
-          navigate(`/projects/${id}/result`);
-        } else if (status.status === 'error') {
-          clearInterval(pollRef.current);
-          setGenerating(false);
-          setError('Ошибка генерации');
-        }
-      }, 3000);
+      navigate(`/projects/${id}/result`);
     } catch (e) {
       setGenerating(false);
       setError(e.message);
