@@ -1,5 +1,9 @@
 const BASE = `${import.meta.env.VITE_N8N_BASE_URL}${import.meta.env.VITE_N8N_WEBHOOK_PATH}`;
 
+if (!import.meta.env.VITE_N8N_BASE_URL) {
+  console.error('[API] VITE_N8N_BASE_URL не задан! Проверьте переменные окружения в Coolify.');
+}
+
 async function req(method, path, body, timeoutMs) {
   const controller = timeoutMs ? new AbortController() : null;
   const timer = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
@@ -10,8 +14,11 @@ async function req(method, path, body, timeoutMs) {
       body: body ? JSON.stringify(body) : undefined,
       signal: controller?.signal,
     });
-    if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
     const text = await res.text();
+    if (!res.ok) throw new Error(`HTTP ${res.status}: ${text.slice(0, 200)}`);
+    if (text.trimStart().startsWith('<')) {
+      throw new Error(`Сервер вернул HTML вместо JSON. Проверьте URL: ${BASE}${path}`);
+    }
     return text ? JSON.parse(text) : {};
   } catch (e) {
     if (e.name === 'AbortError') throw new Error('Превышено время ожидания (120 сек). Попробуйте снова.');
