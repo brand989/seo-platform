@@ -1,16 +1,65 @@
-# React + Vite
+# SEO Platform MVP
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Генератор технических заданий для SEO-специалистов.
+Вводите параметры проекта, выбираете конкурентов из поисковой выдачи, система парсит их страницы и генерирует ТЗ через AI.
 
-Currently, two official plugins are available:
+**Production URL:** https://seopaltform.dzygman.com
+**GitHub:** https://github.com/brand989/seo-platform
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## Стек
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Frontend:** React + Vite + MUI (Material UI)
+- **Backend/Automation:** n8n (workflows)
+- **Database:** NocoDB
+- **AI:** OpenRouter (Claude / GPT)
+- **Scraping:** Firecrawl
+- **Search:** Serper API
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Деплой на Coolify
+
+1. **New Resource → Static Site** (или Nixpacks)
+2. Подключить репозиторий: `brand989/seo-platform`
+3. Настройки:
+   - Build Command: `npm run build`
+   - Publish Directory: `dist`
+   - Domain: `seopaltform.dzygman.com`
+4. **Environment Variables:**
+   ```
+   VITE_N8N_BASE_URL=https://n8n.dzygman.com
+   VITE_N8N_WEBHOOK_PATH=/webhook
+   ```
+5. Деплой
+
+---
+
+## Локальная разработка
+
+```bash
+cp .env.example .env
+npm install
+npm run dev   # http://localhost:3000
+```
+
+---
+
+## API эндпоинты (n8n webhooks)
+
+| Метод | Путь | Описание |
+|-------|------|----------|
+| GET | `/api/projects` | Список проектов |
+| POST | `/api/projects` | Создать проект |
+| GET | `/api/project?id=X` | Получить проект |
+| DELETE | `/api/project?id=X` | Удалить проект |
+| GET | `/api/project/status?id=X` | Получить статус |
+| POST | `/api/project/search-competitors` | Найти конкурентов |
+| POST | `/api/project/generate` | Генерировать ТЗ (async) |
+
+---
+
+## Статусы проекта
+
+`draft` → `searching` → `competitors_found` → `analyzing` → `done`
